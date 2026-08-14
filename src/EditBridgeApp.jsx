@@ -70,6 +70,40 @@ const GlobalStyle = () => (
 
     .eb-scrollbar-hide::-webkit-scrollbar { display:none; }
     .eb-scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
+
+    /* Responsive grid utilities */
+    .eb-g-hero { grid-template-columns: 1.05fr 0.95fr; }
+    .eb-g-2 { grid-template-columns: 1fr 1fr; }
+    .eb-g-3 { grid-template-columns: repeat(3, 1fr); }
+    .eb-g-howitworks { grid-template-columns: 320px 1fr; }
+    .eb-g-analogy { grid-template-columns: 1fr auto 1fr; }
+    .eb-g-footer { grid-template-columns: 1.4fr repeat(3, 1fr); }
+    .eb-g-timeline { grid-template-columns: 1fr 280px; }
+
+    @media (max-width: 900px) {
+      .eb-g-hero { grid-template-columns: 1fr; }
+      .eb-g-3 { grid-template-columns: 1fr 1fr; }
+      .eb-g-timeline { grid-template-columns: 1fr; }
+      .eb-app-sidebar { width: 68px !important; }
+      .eb-app-sidebar .eb-navlabel, .eb-app-sidebar .eb-brandlabel { display: none !important; }
+      .eb-app-sidebar button { justify-content: center !important; }
+    }
+    @media (max-width: 760px) {
+      .eb-g-2 { grid-template-columns: 1fr; }
+      .eb-g-3 { grid-template-columns: 1fr; }
+      .eb-g-howitworks { grid-template-columns: 1fr; }
+      .eb-g-analogy { grid-template-columns: 1fr; }
+      .eb-g-footer { grid-template-columns: 1fr 1fr; }
+      .eb-hide-mobile { display: none !important; }
+      .eb-nav-toggle { display: inline-flex !important; }
+      .eb-hero-title { font-size: 38px !important; }
+      .eb-stat-row { flex-wrap: wrap; }
+      .eb-project-row { grid-template-columns: 1fr !important; justify-items: start !important; gap: 6px !important; }
+      .eb-project-row > *:last-child { display: none !important; }
+    }
+    @media (max-width: 480px) {
+      .eb-g-footer { grid-template-columns: 1fr; }
+    }
   `}</style>
 );
 
@@ -287,7 +321,7 @@ function NavBar({ onTry, onSignIn }) {
           </div>
           <span className="eb-display" style={{ fontSize: 18, fontWeight: 700 }}>EditBridge</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }} className="eb-scrollbar-hide">
+        <div className="eb-hide-mobile eb-scrollbar-hide" style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <div style={{ display: "flex", gap: 24 }}>
             {links.map(l => (
               <a key={l} href={`#${l.toLowerCase().replace(/\s+/g, "-")}`} style={{ fontSize: 14, color: C.textDim, textDecoration: "none" }}>{l}</a>
@@ -298,7 +332,25 @@ function NavBar({ onTry, onSignIn }) {
             <Button variant="primary" size="sm" onClick={onTry}>Try EditBridge</Button>
           </div>
         </div>
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="eb-nav-toggle"
+          style={{ display: "none", width: 36, height: 36, borderRadius: 8, background: C.panel2, border: `1px solid ${C.border}`, alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+        >
+          {open ? <X size={17} color={C.text} /> : <Menu size={17} color={C.text} />}
+        </button>
       </div>
+      {open && (
+        <div style={{ borderTop: `1px solid ${C.borderSoft}`, padding: "14px 24px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+          {links.map(l => (
+            <a key={l} href={`#${l.toLowerCase().replace(/\s+/g, "-")}`} onClick={() => setOpen(false)} style={{ fontSize: 14.5, color: C.textDim, textDecoration: "none" }}>{l}</a>
+          ))}
+          <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+            <Button variant="ghost" size="sm" onClick={onSignIn}>Sign in</Button>
+            <Button variant="primary" size="sm" onClick={onTry}>Try EditBridge</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -359,20 +411,20 @@ function HeroPipeline() {
 function Hero({ onTry }) {
   return (
     <div style={{ maxWidth: 1180, margin: "0 auto", padding: "72px 24px 40px" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 56, alignItems: "center" }}>
+      <div className="eb-g-hero" style={{ display: "grid", gap: 56, alignItems: "center" }}>
         <div>
           <Eyebrow>Universal edit transfer</Eyebrow>
-          <h1 className="eb-display" style={{ fontSize: 56, lineHeight: 1.04, fontWeight: 700, letterSpacing: "-0.02em", margin: 0 }}>
+          <h1 className="eb-display eb-hero-title" style={{ fontSize: 56, lineHeight: 1.04, fontWeight: 700, letterSpacing: "-0.02em", margin: 0 }}>
             Edit once.<br />Finish anywhere.
           </h1>
           <p style={{ fontSize: 17, color: C.textDim, marginTop: 22, maxWidth: 460, lineHeight: 1.6 }}>
             Transfer your creative timeline between editing platforms without rebuilding the edit from scratch.
           </p>
-          <div style={{ display: "flex", gap: 12, marginTop: 30 }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 30, flexWrap: "wrap" }}>
             <Button variant="primary" size="lg" icon={ArrowRight} onClick={onTry}>Try EditBridge</Button>
             <Button variant="outline" size="lg" icon={Play}>See how it works</Button>
           </div>
-          <div style={{ display: "flex", gap: 22, marginTop: 36 }} className="eb-mono">
+          <div className="eb-mono eb-stat-row" style={{ display: "flex", gap: 22, marginTop: 36 }}>
             {[["Cuts", "Reconstructed"], ["Timing", "Preserved"], ["Audio", "Synced"]].map(([a, b]) => (
               <div key={a} style={{ fontSize: 11.5, color: C.textFaint }}>
                 <span style={{ color: C.mint }}>{a}</span> — {b}
@@ -399,7 +451,7 @@ function ProblemSection() {
         placement, audio timing, effects and transitions — often changing the original creative intent along the way.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 40 }}>
+      <div className="eb-g-2" style={{ display: "grid", gap: 20, marginTop: 40 }}>
         <div style={{ border: `1px solid ${C.border}`, borderRadius: 14, padding: 24, background: C.panel }}>
           <Badge color={C.red} bg="rgba(242,85,90,0.1)">Without EditBridge</Badge>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 20, flexWrap: "wrap" }}>
@@ -435,7 +487,7 @@ function AnalogySection() {
         The edit shouldn't have to start over when it crosses borders.
       </h2>
       <div style={{ marginTop: 32, border: `1px solid ${C.border}`, borderRadius: 16, padding: "36px 32px", background: `radial-gradient(circle at 20% 20%, rgba(94,234,176,0.06), transparent 55%), ${C.panel}` }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 24, alignItems: "center" }}>
+        <div className="eb-g-analogy" style={{ display: "grid", gap: 24, alignItems: "center" }}>
           <div style={{ textAlign: "center" }}>
             <div className="eb-mono" style={{ fontSize: 11, color: C.textFaint, letterSpacing: "0.1em", marginBottom: 10 }}>INDIA</div>
             <div style={{ fontSize: 40 }}>💃</div>
@@ -479,7 +531,7 @@ function HowItWorksSection() {
       <h2 className="eb-display" style={{ fontSize: 32, fontWeight: 700, margin: 0, letterSpacing: "-0.01em" }}>
         Four steps. One timeline.
       </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: 24, marginTop: 32 }}>
+      <div className="eb-g-howitworks" style={{ display: "grid", gap: 24, marginTop: 32 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {steps.map((s, i) => (
             <button key={s.title} onClick={() => setStep(i)} style={{
@@ -560,7 +612,7 @@ function EffectCompatSection() {
       <p style={{ color: C.textDim, fontSize: 15, marginTop: 12, maxWidth: 600 }}>
         Some effects are software-specific and cannot be translated perfectly between editing applications. Here's what to expect.
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18, marginTop: 30 }}>
+      <div className="eb-g-3" style={{ display: "grid", gap: 18, marginTop: 30 }}>
         {cols.map(c => (
           <div key={c.title} style={{ border: `1px solid ${C.border}`, borderRadius: 14, padding: 22, background: C.panel }}>
             <c.icon size={20} color={c.color} />
@@ -600,7 +652,7 @@ function PricingSection({ onTry }) {
     <div id="pricing" style={{ maxWidth: 1180, margin: "0 auto", padding: "20px 24px 90px" }}>
       <Eyebrow>Pricing</Eyebrow>
       <h2 className="eb-display" style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>Simple plans, placeholder prices</h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18, marginTop: 30 }}>
+      <div className="eb-g-3" style={{ display: "grid", gap: 18, marginTop: 30 }}>
         {plans.map(p => (
           <div key={p.name} style={{
             border: `1px solid ${p.highlight ? C.mint : C.border}`, borderRadius: 16, padding: 26,
@@ -657,7 +709,7 @@ function Footer() {
   return (
     <div style={{ borderTop: `1px solid ${C.borderSoft}`, padding: "48px 24px 32px" }}>
       <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr repeat(3, 1fr)", gap: 32 }}>
+        <div className="eb-g-footer" style={{ display: "grid", gap: 32 }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 24, height: 24, borderRadius: 6, background: C.mint, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -783,12 +835,12 @@ const NAV_ITEMS = [
 
 function Sidebar({ active, onNav, onSignOut }) {
   return (
-    <div style={{ width: 220, borderRight: `1px solid ${C.borderSoft}`, display: "flex", flexDirection: "column", padding: "18px 12px", flexShrink: 0 }}>
+    <div className="eb-app-sidebar" style={{ width: 220, borderRight: `1px solid ${C.borderSoft}`, display: "flex", flexDirection: "column", padding: "18px 12px", flexShrink: 0 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 8px 22px" }}>
-        <div style={{ width: 24, height: 24, borderRadius: 6, background: C.mint, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: 24, height: 24, borderRadius: 6, background: C.mint, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Scissors size={13} color="#06170F" />
         </div>
-        <span className="eb-display" style={{ fontWeight: 700, fontSize: 15.5 }}>EditBridge</span>
+        <span className="eb-display eb-brandlabel" style={{ fontWeight: 700, fontSize: 15.5 }}>EditBridge</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {NAV_ITEMS.map(item => (
@@ -799,7 +851,7 @@ function Sidebar({ active, onNav, onSignOut }) {
             color: active === item.id ? C.text : C.textDim,
           }}>
             <item.icon size={15} color={active === item.id ? C.mint : C.textFaint} />
-            <span style={{ fontSize: 13.5, fontWeight: active === item.id ? 600 : 500 }}>{item.label}</span>
+            <span className="eb-navlabel" style={{ fontSize: 13.5, fontWeight: active === item.id ? 600 : 500 }}>{item.label}</span>
           </button>
         ))}
       </div>
@@ -808,7 +860,7 @@ function Sidebar({ active, onNav, onSignOut }) {
           display: "flex", alignItems: "center", gap: 11, padding: "9px 10px", borderRadius: 8,
           border: "none", cursor: "pointer", background: "transparent", color: C.textFaint, width: "100%", textAlign: "left",
         }}>
-          <LogOut size={15} /> <span style={{ fontSize: 13.5 }}>Sign out</span>
+          <LogOut size={15} /> <span className="eb-navlabel" style={{ fontSize: 13.5 }}>Sign out</span>
         </button>
       </div>
     </div>
@@ -856,7 +908,7 @@ function StatCard({ label, value, sub, icon: Icon }) {
 function ProjectRow({ p, onOpen }) {
   const statusColor = p.status === "Completed" ? C.mint : p.status === "Needs review" ? C.yellow : C.textDim;
   return (
-    <button onClick={() => onOpen(p)} style={{
+    <button onClick={() => onOpen(p)} className="eb-project-row" style={{
       display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 0.8fr 24px", gap: 12, alignItems: "center",
       width: "100%", padding: "14px 16px", background: "transparent", border: "none", borderBottom: `1px solid ${C.borderSoft}`,
       cursor: "pointer", textAlign: "left",
@@ -877,7 +929,7 @@ function ProjectRow({ p, onOpen }) {
 function DashboardView({ onNav, onOpenProject }) {
   return (
     <div style={{ padding: 28, overflowY: "auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 14 }}>
         <div>
           <div style={{ fontSize: 13.5, color: C.textDim }}>Welcome back</div>
           <h1 className="eb-display" style={{ fontSize: 24, fontWeight: 700, margin: "4px 0 0" }}>Your transfers</h1>
@@ -885,7 +937,7 @@ function DashboardView({ onNav, onOpenProject }) {
         <Button variant="primary" icon={PlusCircle} onClick={() => onNav("new")}>New transfer</Button>
       </div>
 
-      <div style={{ display: "flex", gap: 16, marginTop: 24 }}>
+      <div className="eb-stat-row" style={{ display: "flex", gap: 16, marginTop: 24 }}>
         <StatCard label="Projects" value={DEMO_PROJECTS.length} icon={FolderKanban} />
         <StatCard label="Recent transfers" value="4" sub="+1 this week" icon={ArrowLeftRight} />
         <StatCard label="Credits used" value="6 / 30" sub="Creator plan" icon={BarChart3} />
@@ -921,21 +973,22 @@ function ProjectsView({ onOpenProject, onNav }) {
 function WizardSteps({ step }) {
   const labels = ["Set up", "Upload", "Analyze", "Timeline", "Review", "Export"];
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 22 }}>
+    <div className="eb-scrollbar-hide" style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 22, overflowX: "auto", paddingBottom: 4 }}>
       {labels.map((l, i) => (
         <React.Fragment key={l}>
-          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
             <div style={{
               width: 20, height: 20, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
               background: i < step ? C.mint : i === step ? "transparent" : C.panel2,
               border: `1px solid ${i <= step ? C.mint : C.border}`, fontSize: 10.5, fontWeight: 700,
               color: i < step ? "#06170F" : i === step ? C.mint : C.textFaint,
+              flexShrink: 0,
             }}>
               {i < step ? <Check size={11} /> : i + 1}
             </div>
-            <span style={{ fontSize: 12.5, color: i === step ? C.text : C.textFaint, fontWeight: i === step ? 600 : 400 }}>{l}</span>
+            <span style={{ fontSize: 12.5, color: i === step ? C.text : C.textFaint, fontWeight: i === step ? 600 : 400, whiteSpace: "nowrap" }}>{l}</span>
           </div>
-          {i < labels.length - 1 && <div style={{ width: 20, height: 1, background: C.border }} />}
+          {i < labels.length - 1 && <div style={{ width: 20, height: 1, background: C.border, flexShrink: 0 }} />}
         </React.Fragment>
       ))}
     </div>
@@ -1044,7 +1097,7 @@ function UploadStep({ files, setFiles, onNext, onBack }) {
   const canContinue = files.reference.length > 0;
   return (
     <div style={{ maxWidth: 720 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+      <div className="eb-g-3" style={{ display: "grid", gap: 16 }}>
         <DropZone label="Reference video" hint="Drop your exported edited video here · MP4, MOV, M4V" accept="video/*" icon={FileVideo} files={files.reference} onAdd={addFiles("reference")} onRemove={removeFile("reference")} />
         <DropZone label="Raw media" hint="Drop original clips here · MP4, MOV, M4V" accept="video/*" icon={Film} files={files.raw} onAdd={addFiles("raw")} onRemove={removeFile("raw")} />
         <DropZone label="Music / audio" hint="Drop music or audio here · MP3, WAV, M4A" accept="audio/*" icon={FileAudio} files={files.audio} onAdd={addFiles("audio")} onRemove={removeFile("audio")} />
@@ -1196,7 +1249,7 @@ function ClipInspector({ clip }) {
 function TimelineStep({ project, selected, setSelected, onNext, onBack }) {
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 18 }}>
+      <div className="eb-g-timeline" style={{ display: "grid", gap: 18 }}>
         <TimelinePanel project={project} clipsV1={VIDEO_TRACK_1} clipsV2={VIDEO_TRACK_2} music={MUSIC_TRACK} selected={selected} setSelected={setSelected} />
         <ClipInspector clip={selected} />
       </div>
@@ -1336,7 +1389,7 @@ function ExportStep({ project, onBack, onFinish }) {
     <div style={{ maxWidth: 640 }}>
       <div className="eb-display" style={{ fontSize: 20, fontWeight: 700 }}>Your timeline is ready</div>
       <div style={{ border: `1px solid ${C.border}`, borderRadius: 12, background: C.panel, padding: 20, marginTop: 18 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        <div className="eb-g-3" style={{ display: "grid", gap: 16 }}>
           {[
             ["Source", project?.source || "VN"],
             ["Destination", project?.destination || "Premiere Pro"],
@@ -1422,7 +1475,7 @@ function ProjectDetail({ project, onBack }) {
         </div>
         <Badge color={project.accuracy >= 90 ? C.mint : C.yellow} bg="rgba(94,234,176,0.1)">{project.accuracy}% matched</Badge>
       </div>
-      <div style={{ marginTop: 20, display: "grid", gridTemplateColumns: "1fr 280px", gap: 18 }}>
+      <div className="eb-g-timeline" style={{ marginTop: 20, display: "grid", gap: 18 }}>
         <TimelinePanel project={project} clipsV1={VIDEO_TRACK_1} clipsV2={VIDEO_TRACK_2} music={MUSIC_TRACK} selected={selected} setSelected={setSelected} />
         <ClipInspector clip={selected} />
       </div>
